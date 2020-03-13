@@ -38,7 +38,6 @@ def cityreader(cities=[]):
 
       for row in csvreader:
         cities.append(City(name = row[name_index], lat = float(row[lat_index]), lon = float(row[lon_index]) ))
-    print(cities)
     return cities
 
 cityreader(cities)
@@ -77,13 +76,61 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
+user_input1 = input("Enter lat1,lon1: ")
+user_input2 = input("Enter lat2, lon2: ")
+
+# latitude is y
+# longitude is x
+lat1, lon1 = user_input1.split(",")
+lat2, lon2 = user_input2.split(",")
+
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
 
+  max_x = None
+  max_y = None
+  min_x = None
+  min_y = None
+
+  if lat1 < lat2 and lon1 < lon2:
+    # input1 bottom left
+    min_y = lat1
+    max_y = lat2
+    min_x = lon1
+    max_x = lon2
+
+  elif lat1 < lat2 and lon1 > lon2: 
+    # input1 bottom right  
+    min_y = lat1
+    max_y = lat2
+    min_x = lon2
+    max_x = lon1
+
+  elif lat1 > lat2 and lon1 > lon2:
+    # input2 bottom left
+    min_y = lat2
+    max_y = lat1
+    min_x = lon2
+    max_x = lon1
+
+  else: 
+    # input2 bottom right
+    min_y = lat2
+    max_y = lat1
+    min_x = lon1
+    max_x = lon2
+
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
+  for city in cities: 
+    if city.lat < max_y and city.lat > min_y and city.lon < max_x and city.lon > min_x: 
+      within.append(city)
 
   return within
+
+within = cityreader_stretch(float(lat1), float(lon1), float(lat2), float(lon2), cities)
+for city in within:
+  print(f"{city.name}: ({city.lat},{city.lon})")
